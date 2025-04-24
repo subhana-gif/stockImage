@@ -23,6 +23,7 @@ cd stockImage
 Navigate to the backend directory and install the required dependencies:
 
 cd backend
+
 npm install
 
 ### 3. Create a `.env` File
@@ -30,8 +31,11 @@ npm install
 Create a `.env` file in the `backend` directory and add the following variables:
 
 MONGO_URI=your_mongodb_connection_string
+
 JWT_SECRET=your_jwt_secret_key
+
 EMAIL_USER=your_email_address
+
 EMAIL_PASS=your_email_password
 
 Replace the placeholders with your actual credentials.
