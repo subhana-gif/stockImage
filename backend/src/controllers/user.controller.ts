@@ -65,7 +65,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     console.log("token:",token)
     await user.save()
   
-    const resetLink = `http://localhost:5173/reset-password/${token}`
+    const resetLink = `https://stockimage.duckdns.org/reset-password/${token}`
   
     await transporter.sendMail({
       to: user.email,
