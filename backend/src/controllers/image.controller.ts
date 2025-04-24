@@ -10,7 +10,8 @@ export const uploadImages = async (req: Request, res: Response): Promise<void> =
     const titles = Array.isArray(req.body.title) ? req.body.title : [req.body.title];
 
     if (files.length !== titles.length) {
-      return res.status(400).json({ message: 'Mismatch between number of images and titles' });
+      res.status(400).json({ message: 'Mismatch between number of images and titles' });
+      return;
     }
 
     const images = files.map((file, index) => ({
@@ -85,7 +86,8 @@ export const replaceImage = async (req: Request, res: Response) : Promise<void>=
     const image = await Image.findById(req.params.id)
 
     if (!image) {
-      return res.status(404).json({ message: 'Image not found' })
+      res.status(404).json({ message: 'Image not found' });
+      return;
     }
 
     // Delete the old image file

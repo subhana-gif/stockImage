@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import User from '../models/user.model'
 import crypto from 'crypto'
 import nodemailer from 'nodemailer'
@@ -30,20 +30,24 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       const user = await User.findOne({ email })
       
       if (!user) {
-        return res.status(404).json({ message: 'User not found' }) 
+        res.status(404).json({ message: 'User not found' });
+        return;
       }
       
       const isMatch = await bcrypt.compare(password, user.password)
       
       if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid credentials' }) 
+         res.status(400).json({ message: 'Invalid credentials' }) 
+         return
       }
   
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' })
-      return res.json({ token,id:user._id})
+       res.json({ token,id:user._id})
+       return
     } catch (err) {
       console.error(err)
-      return res.status(500).json({ message: 'Server error' })
+       res.status(500).json({ message: 'Server error' })
+       return
     }
   }
   
@@ -59,8 +63,10 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   export const forgotPassword = async (req: Request, res: Response): Promise<void>  => {
     const { email } = req.body
     const user = await User.findOne({ email })
-    if (!user) return res.status(404).json({ message: 'User not found' })
-  
+    if (!user) {
+       res.status(404).json({ message: 'User not found' })
+    return
+    }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' })
     console.log("token:",token)
     await user.save()
@@ -81,17 +87,19 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { password } = req.body
 
   if (!password || password.length < 6) {
-    return res.status(400).json({ message: 'Password must be at least 6 characters long' })
-  }
+     res.status(400).json({ message: 'Password must be at least 6 characters long' })
+     return
+    }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string)
-    const user = await User.findById(decoded.id)
+    const user = await User.findById((decoded as JwtPayload).id);
     console.log("JWT_SECRET:", process.env.JWT_SECRET)
     console.log("Token:", token)
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid token or user not found' })
+       res.status(400).json({ message: 'Invalid token or user not found' })
+       return
     }
 
     user.password = await bcrypt.hash(password, 10)
@@ -100,6 +108,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ message: 'Password reset successfully' })
   } catch (error) {
     console.log("error reset:",error)
-    return res.status(400).json({ message: 'Invalid or expired token' })
+     res.status(400).json({ message: 'Invalid or expired token' })
+     return
   }
 }
