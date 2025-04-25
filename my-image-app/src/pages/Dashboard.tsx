@@ -38,7 +38,7 @@ const Dashboard = () => {
     if (!userId) return;
     
     try {
-      const response = await axios.get(`http://3.80.152.15/api/images/${userId}`);
+      const response = await axios.get(`http://stockimage.duckdns.org/api/images/${userId}`);
       // Sort images by order if available
       const sortedImages = response.data.sort((a: ImageItem, b: ImageItem) => 
         (a.order !== undefined && b.order !== undefined) ? a.order - b.order : 0
@@ -71,7 +71,7 @@ const Dashboard = () => {
     formData.append('startOrder', images.length.toString());
 
     try {
-      const response = await axios.post(`http://3.80.152.15/api/images/upload`, formData, {
+      const response = await axios.post(`http://stockimage.duckdns.org/api/images/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -96,7 +96,7 @@ const Dashboard = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://3.80.152.15/api/images/${id}`);
+      await axios.delete(`http://stockimage.duckdns.org/api/images/${id}`);
       setImages((prevImages) => prevImages.filter((image) => image._id !== id));
       toast.success('Image deleted successfully');
     } catch (error) {
@@ -106,7 +106,7 @@ const Dashboard = () => {
 
   const handleEdit = async (id: string, updatedTitle: string) => {
     try {
-      const response = await axios.put(`http://3.80.152.15/api/images/edit/${id}`, {
+      const response = await axios.put(`http://stockimage.duckdns.org/api/images/edit/${id}`, {
         title: updatedTitle,
       });
 
@@ -127,7 +127,7 @@ const Dashboard = () => {
     formData.append('image', file);
     
     try {
-      const response = await axios.put(`http://3.80.152.15/api/images/replace/${id}`, formData, {
+      const response = await axios.put(`http://stockimage.duckdns.org/api/images/replace/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -239,7 +239,7 @@ const Dashboard = () => {
         order: index
       }));
       
-      await axios.put('http://3.80.152.15/api/images/rearrange', {
+      await axios.put('http://stockimage.duckdns.org/api/images/rearrange', {
         images: updatedOrders
       });
       
