@@ -15,7 +15,7 @@ const Login = () => {
 
     try {
       // Make the login request
-      const response = await axios.post('http://stockimage.duckdns.org/api/users/login', { email, password })
+      const response = await axios.post('https://stockimage.duckdns.org/api/users/login', { email, password })
 
       // Log the response to check if the token is in the response
       console.log('Login Response:', response.data)

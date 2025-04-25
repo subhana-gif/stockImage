@@ -11,7 +11,7 @@ const ResetPassword = () => {
     console.log("token:",token)
     e.preventDefault()
     try {
-      const response = await axios.post(`http://stockimage.duckdns.org/api/users/reset-password/${token}`, { password })
+      const response = await axios.post(`https://stockimage.duckdns.org/api/users/reset-password/${token}`, { password })
       setMessage(response.data.message)
     } catch (err) {
       console.log("error:",err)

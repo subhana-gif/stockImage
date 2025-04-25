@@ -11,7 +11,7 @@ const Register = () => {
     e.preventDefault()
     setMessage('')
     try {
-      const res = await axios.post('http://stockimage.duckdns.org/api/users/register', {
+      const res = await axios.post('https://stockimage.duckdns.org/api/users/register', {
         email,
         phone,
         password
