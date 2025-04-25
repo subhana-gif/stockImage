@@ -15,7 +15,7 @@ const Login = () => {
 
     try {
       // Make the login request
-      const response = await axios.post('http://localhost:5000/api/users/login', { email, password })
+      const response = await axios.post('http://3.80.152.15/api/users/login', { email, password })
 
       // Log the response to check if the token is in the response
       console.log('Login Response:', response.data)

@@ -11,7 +11,7 @@ const Register = () => {
     e.preventDefault()
     setMessage('')
     try {
-      const res = await axios.post('http://localhost:5000/api/users/register', {
+      const res = await axios.post('http://3.80.152.15/api/users/register', {
         email,
         phone,
         password
