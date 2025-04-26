@@ -29,6 +29,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token')
+  console.log("token:",token)
 
   useEffect(() => {
     if (!userId) {
@@ -42,8 +44,15 @@ const Dashboard = () => {
     if (!userId) return;
     
     try {
-      const response = await axios.get(`https://stockimage.duckdns.org/api/images/${userId}`);
-      // Sort images by order if available
+      const response = await axios.get(
+        `https://stockimage.duckdns.org/api/images/${userId}`, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,  // The Authorization header
+          }
+        }
+      );
+            // Sort images by order if available
       const sortedImages = response.data.sort((a: ImageItem, b: ImageItem) => 
         (a.order !== undefined && b.order !== undefined) ? a.order - b.order : 0
       );
@@ -79,10 +88,10 @@ const Dashboard = () => {
     formData.append('userId', userId || '');
     // Set initial order to be the last in the current sequence
     formData.append('startOrder', images.length.toString());
-
     try {
       const response = await axios.post(`https://stockimage.duckdns.org/api/images/upload`, formData, {
         headers: {
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
@@ -105,7 +114,12 @@ const Dashboard = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`https://stockimage.duckdns.org/api/images/${id}`);
+      await axios.delete(`https://stockimage.duckdns.org/api/images/${id}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
       setImages((prevImages) => prevImages.filter((image) => image._id !== id));
       toast.success('Image deleted successfully');
     } catch (error) {
@@ -117,6 +131,9 @@ const Dashboard = () => {
     try {
       const response = await axios.put(`https://stockimage.duckdns.org/api/images/edit/${id}`, {
         title: updatedTitle,
+          headers: {
+            Authorization: `Bearer ${token}`,  // The Authorization header
+          }
       });
 
       setImages((prevImages) =>
@@ -138,6 +155,7 @@ const Dashboard = () => {
     try {
       const response = await axios.put(`https://stockimage.duckdns.org/api/images/replace/${id}`, formData, {
         headers: {
+            Authorization: `Bearer ${token}`,  // The Authorization header
           'Content-Type': 'multipart/form-data',
         },
       });
@@ -303,7 +321,10 @@ const Dashboard = () => {
       }));
       
       await axios.put('https://stockimage.duckdns.org/api/images/rearrange', {
-        images: updatedOrders
+        images: updatedOrders,
+        headers: {
+          Authorization: `Bearer ${token}`,  // The Authorization header
+        }
       });
       
       toast.success('Image order saved successfully');

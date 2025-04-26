@@ -14,6 +14,7 @@ const verifyToken = (req: AuthRequest, res: Response, next: NextFunction): void 
   }
 
   const token = authHeader.split(' ')[1];
+  console.log("token:",token)
 
   if (!token) {
     res.status(401).json({ message: 'Unauthorized: Token missing' });
