@@ -15,7 +15,8 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 app.use(cors({
   origin: ['http://localhost:5173', "https://stock-image-ncbd-git-main-subhana-gifs-projects.vercel.app", "https://stockimage.duckdns.org",],
-    credentials: true
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],  
+  credentials: true
   }))
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
