@@ -8,6 +8,7 @@ import {
   rearrangeImages,
   replaceImage
 } from '../controllers/image.controller'
+import verifyToken from '../middlewares/authmiddlewae'
 
 const router = express.Router()
 
@@ -20,11 +21,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
-router.post('/upload', upload.array('images'), uploadImages)
-router.get('/:userId', getImages)
-router.put('/edit/:id', upload.single('image'), editImage)
-router.delete('/:id', deleteImage)
-router.put('/rearrange', rearrangeImages)
-router.put('/replace/:id', upload.single('image'), replaceImage)
+router.post('/upload', verifyToken,upload.array('images'), uploadImages)
+router.get('/:userId', verifyToken,getImages)
+router.put('/edit/:id',verifyToken, upload.single('image'), editImage)
+router.delete('/:id', verifyToken,deleteImage)
+router.put('/rearrange', verifyToken,rearrangeImages)
+router.put('/replace/:id',verifyToken, upload.single('image'), replaceImage)
 
 export default router

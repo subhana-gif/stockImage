@@ -32,7 +32,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!userId) {
-      navigate('/login');
+      navigate('/');
       return;
     }
     fetchImages();
