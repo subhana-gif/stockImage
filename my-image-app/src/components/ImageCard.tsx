@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Edit2, RefreshCw, Check, X } from 'lucide-react';
+import { Trash2, Edit2, RefreshCw, Check, X, Eye } from 'lucide-react';
 
 interface ImageCardProps {
   image: {
@@ -10,14 +10,28 @@ interface ImageCardProps {
   onDelete: (id: string) => void;
   onEdit: (id: string, newTitle: string) => void;
   onReplace?: (id: string, file: File) => void;
+  theme?: 'purple' | 'default';
 }
 
-export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, onReplace }) => {
+export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, onReplace, theme = 'default' }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(image.title);
   const [isDeleteConfirming, setIsDeleteConfirming] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  // Theme color variables
+  const themeColors = {
+    primary: theme === 'purple' ? 'purple' : 'blue',
+    hover: theme === 'purple' ? 'bg-purple-50' : 'bg-blue-50',
+    button: theme === 'purple' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-blue-600 hover:bg-blue-700',
+    text: theme === 'purple' ? 'text-purple-800' : 'text-gray-800',
+    accent: theme === 'purple' ? 'text-purple-600' : 'text-blue-600',
+    border: theme === 'purple' ? 'border-purple-300' : 'border-gray-300',
+    ring: theme === 'purple' ? 'ring-purple-500' : 'ring-blue-500',
+    spinner: theme === 'purple' ? 'border-purple-300 border-t-purple-600' : 'border-blue-300 border-t-blue-600',
+  };
 
   const handleSave = () => {
     onEdit(image._id, title);
@@ -56,7 +70,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, o
 
   return (
     <div 
-      className="group relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white"
+      className={`group relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white ${theme === 'purple' ? 'border-purple-100' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -64,7 +78,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, o
       <div className="relative aspect-square overflow-hidden bg-gray-100">
         {!isImageLoaded && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-300 border-t-blue-600 rounded-full"></div>
+            <div className={`animate-spin w-8 h-8 border-4 ${themeColors.spinner} rounded-full`}></div>
           </div>
         )}
         <img
@@ -78,6 +92,17 @@ export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, o
         {isHovered && isImageLoaded && !isDeleteConfirming && !isEditing && (
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="p-2 w-full flex justify-center space-x-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsPreviewOpen(true);
+                }}
+                className="p-2 bg-white/90 text-gray-800 rounded-full hover:bg-white transition-colors duration-200"
+                title="Preview Image"
+              >
+                <Eye size={16} />
+              </button>
+              
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -126,7 +151,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, o
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={handleEscapeKey}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className={`w-full p-2 border ${themeColors.border} rounded-md focus:ring-2 focus:${themeColors.ring} focus:border-${themeColors.primary}-500 outline-none`}
               autoFocus
               placeholder="Enter image title"
             />
@@ -143,7 +168,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, o
               </button>
               <button
                 onClick={handleSave}
-                className="p-2 text-blue-600 rounded-md hover:bg-blue-50 transition-colors"
+                className={`p-2 ${themeColors.accent} rounded-md hover:${themeColors.hover} transition-colors`}
                 title="Save"
               >
                 <Check size={16} />
@@ -152,7 +177,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, o
           </div>
         ) : (
           <h3 
-            className="font-medium text-gray-800 line-clamp-2 h-12" 
+            className={`font-medium ${themeColors.text} line-clamp-2 h-12 cursor-pointer hover:${themeColors.accent}`} 
             title={image.title}
             onClick={() => setIsEditing(true)}
           >
@@ -183,6 +208,36 @@ export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, o
               >
                 Delete
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Image Preview Modal */}
+      {isPreviewOpen && (
+        <div 
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-sm p-4" 
+          onClick={() => setIsPreviewOpen(false)}
+        >
+          <div 
+            className="max-w-4xl max-h-full bg-white rounded-lg shadow-2xl overflow-hidden" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative">
+              <img
+                src={`https://stockimage.duckdns.org${image.imageUrl}`}
+                alt={image.title}
+                className="max-h-[80vh] w-auto mx-auto"
+              />
+              <button 
+                className="absolute top-4 right-4 p-2 bg-black/50 text-white rounded-full hover:bg-black/70"
+                onClick={() => setIsPreviewOpen(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4 bg-white">
+              <h3 className={`text-xl font-medium ${themeColors.text}`}>{image.title || "Untitled Image"}</h3>
             </div>
           </div>
         </div>
