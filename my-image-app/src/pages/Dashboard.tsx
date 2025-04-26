@@ -132,7 +132,7 @@ const Dashboard = () => {
       const response = await axios.put(`https://stockimage.duckdns.org/api/images/edit/${id}`, {
         title: updatedTitle,
           headers: {
-            Authorization: `Bearer ${token}`,  // The Authorization header
+            Authorization: `Bearer ${token}`,
           }
       });
 
@@ -320,13 +320,12 @@ const Dashboard = () => {
         order: index
       }));
       
-      await axios.put('https://stockimage.duckdns.org/api/images/rearrange', {
-        images: updatedOrders,
-        headers: {
-          Authorization: `Bearer ${token}`,  // The Authorization header
-        }
-      });
-      
+      await axios.put(
+        'https://stockimage.duckdns.org/api/images/rearrange',
+        { images: updatedOrders },  // Request body
+        { headers: { Authorization: `Bearer ${token}` } }  // Config object containing headers
+      );
+            
       toast.success('Image order saved successfully');
     } catch (error) {
       toast.error('Failed to save image order');
