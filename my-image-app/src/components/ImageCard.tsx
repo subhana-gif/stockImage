@@ -68,7 +68,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({ image, onDelete, onEdit, o
           </div>
         )}
         <img
-          src={`http://localhost:5000${image.imageUrl}`}
+          src={`https://stockimage.duckdns.org${image.imageUrl}`}
           alt={image.title}
           className={`object-cover w-full h-full transition-all duration-500 ${isImageLoaded ? 'opacity-100' : 'opacity-0'} ${isHovered && !isDeleteConfirming ? 'scale-105 brightness-90' : ''}`}
           onLoad={() => setIsImageLoaded(true)}
