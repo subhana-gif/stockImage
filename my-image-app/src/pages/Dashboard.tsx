@@ -322,8 +322,8 @@ const Dashboard = () => {
       
       await axios.put(
         'https://stockimage.duckdns.org/api/images/rearrange',
-        { images: updatedOrders },  // Request body
-        { headers: { Authorization: `Bearer ${token}` } }  // Config object containing headers
+        { images: updatedOrders },
+        { headers: { Authorization: `Bearer ${token}` } }  
       );
             
       toast.success('Image order saved successfully');
