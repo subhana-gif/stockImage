@@ -129,13 +129,16 @@ const Dashboard = () => {
 
   const handleEdit = async (id: string, updatedTitle: string) => {
     try {
-      const response = await axios.put(`https://stockimage.duckdns.org/api/images/edit/${id}`, {
-        title: updatedTitle,
+      const response = await axios.put(
+        `https://stockimage.duckdns.org/api/images/edit/${id}`, 
+        { title: updatedTitle },
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           }
-      });
-
+        }
+      );
+      
       setImages((prevImages) =>
         prevImages.map((image) =>
           image._id === id ? { ...image, title: response.data.title } : image
